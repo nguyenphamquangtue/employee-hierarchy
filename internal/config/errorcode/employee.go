@@ -3,14 +3,15 @@ package errorcode
 import "employee-hierarchy-api/internal/response"
 
 const (
-	EmployeeNotFound                   = "employee_not_found"
-	EmployeeIDRequired                 = "employee_id_required"
-	EmployeeNameRequired               = "employee_name_required"
-	SupervisorIDRequired               = "supervisor_id_required"
-	EmployeeExisted                    = "employee_existed"
-	SupervisorNotFound                 = "supervisor_not_found"
-	CycleDetectedInSupervisorHierarchy = "cycle_detected_in_supervisor_hierarchy"
-	SubordinateCannotBeASupervisor     = "subordinate_cannot_be_a_supervisor"
+	EmployeeNotFound                       = "employee_not_found"
+	EmployeeIDRequired                     = "employee_id_required"
+	EmployeeNameRequired                   = "employee_name_required"
+	SupervisorIDRequired                   = "supervisor_id_required"
+	EmployeeExisted                        = "employee_existed"
+	SupervisorNotFound                     = "supervisor_not_found"
+	CycleDetectedInSupervisorHierarchy     = "cycle_detected_in_supervisor_hierarchy"
+	SubordinateCannotBeASupervisor         = "subordinate_cannot_be_a_supervisor"
+	SupervisorCannotBeTheSameAsTheEmployee = "supervisor_cannot_be_the_same_as_the_employee"
 )
 
 const (
@@ -22,6 +23,7 @@ const (
 	supervisorNotFoundCode
 	CycleDetectedInSupervisorHierarchyCode
 	SubordinateCannotBeASupervisorCode
+	SupervisorCannotBeTheSameAsTheEmployeeCode
 )
 
 var employee = []response.Code{
@@ -64,5 +66,10 @@ var employee = []response.Code{
 		Key:     SubordinateCannotBeASupervisor,
 		Code:    SubordinateCannotBeASupervisorCode,
 		Message: "Subordinate Cannot Be A Supervisor",
+	},
+	{
+		Key:     SupervisorCannotBeTheSameAsTheEmployee,
+		Code:    SupervisorCannotBeTheSameAsTheEmployeeCode,
+		Message: "Supervisor Cannot be the same as the employee",
 	},
 }

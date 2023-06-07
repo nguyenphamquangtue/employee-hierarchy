@@ -33,7 +33,7 @@ func (s employeeImpl) Update(ctx context.Context, eID int, data requestmodel.Emp
 	)
 
 	if eID == data.SupervisorID {
-		return 0, errors.New("supervisor cannot be the same as the employee")
+		return 0, errors.New(errorcode.SupervisorCannotBeTheSameAsTheEmployee)
 	}
 
 	// find user
@@ -54,11 +54,11 @@ func (s employeeImpl) Update(ctx context.Context, eID int, data requestmodel.Emp
 		return 0, errors.New(errorcode.CycleDetectedInSupervisorHierarchy)
 	}
 
-	for _, e := range employee.Subordinates {
-		if e.ID == supervisor.ID {
-			return 0, errors.New(errorcode.SubordinateCannotBeASupervisor)
-		}
-	}
+	//for _, e := range employee.Subordinates {
+	//	if e.ID == supervisor.ID {
+	//		return 0, errors.New(errorcode.SubordinateCannotBeASupervisor)
+	//	}
+	//}
 
 	supervisorID := data.SupervisorID
 	id, err := repo.Update(dto.Employee{
