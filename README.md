@@ -12,7 +12,7 @@ Usage:
 | 5  | Barbara | 3             |
 
 
-1. API **POST**: `http://localhost:3000/fam/users` (Create/Register user)
+1. API **POST**: `http://localhost:3000/fram/users` (Create/Register user)
    - Body:
      ```json
      {
@@ -32,7 +32,7 @@ Usage:
      }
      ```
 
-2. API **GET**: `http://localhost:3000/fam/users/login` (Login user)
+2. API **GET**: `http://localhost:3000/fram/users/login` (Login user)
 - Body:
   ```json
   {
@@ -52,7 +52,7 @@ Usage:
   }
   ```
 
-3. API **POST**: `http://localhost:3000/fam/employees` (Create Employee) - Need AccessToken
+3. API **POST**: `http://localhost:3000/fram/employees` (Create Employee) - Need AccessToken
     - Body:
      ```json
      {
@@ -70,7 +70,7 @@ Usage:
        "success": true
      }
      ```
-4. API **PUT**: `http://localhost:3000/fam/employees/1` (Update Employee/Add supervisor) - Need AccessToken
+4. API **PUT**: `http://localhost:3000/fram/employees/1` (Update Employee/Add supervisor) - Need AccessToken
     - Body:
      ```json
      {
@@ -89,7 +89,7 @@ Usage:
      }
      ```
 
-5. API **GET**: `http://localhost:3000/fam/employees?name=Nick` (Get Employee Info) - Need AccessToken
+5. API **GET**: `http://localhost:3000/fram/employees?name=Nick` (Get Employee Info) - Need AccessToken
 - Response:
   ```json
   {
@@ -125,13 +125,14 @@ Usage:
   }
   ```
 
-Các test case quan trọng cần test:
+Important test cases to consider:
+
 - API 3:
-  - Tạo mới employee nhưng trùng tên với employee trước đó => throw message : "Employee Existed"
+    Create a new employee with the same name as an existing employee => throw message: "Employee Existed"
 - API 4:
-  - http://localhost:3000/fam/employees/<:id> (id là employee_id)
-  - Nếu supervisor_id trùng với employee_id => throw message:  "Supervisor Cannot be the same as the employee"
-  - Subordinate (Cấp dưới) của employee không thể là supervisor(Cấp trên) của employee đó
-    - Ví dụ: 
-        - Nick là cấp dưới của Jonas, Pete là supervisor của Jonas => Nick không thể là cấp trên của Pete
-        => throw message: "Cycle Detected In Supervisor Hierarchy"
+    + http://localhost:3000/fram/employees/<:id> (where id is the employee_id)
+      If supervisor_id is the same as employee_id => throw message: "Supervisor Cannot be the same as the employee"
+    + A subordinate (lower level) of an employee cannot be the supervisor (higher level) of that employee.
+      Example:
+      Nick is a subordinate of Jonas, Pete is the supervisor of Jonas => Nick cannot be the superior of Pete
+      => throw message: "Cycle Detected In Supervisor Hierarchy"

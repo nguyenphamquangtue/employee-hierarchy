@@ -6,7 +6,7 @@ import (
 
 // Init ...
 func Init(e *echo.Echo) {
-	g := e.Group("/fam")
+	g := e.Group("/fram")
 
 	// Components
 	user(g)
