@@ -53,6 +53,26 @@ func (p *PostgreSQLConnector) Connect() error {
 	return nil
 }
 
+// ConnectDBTest establishes a new database connection
+func (p *PostgreSQLConnector) ConnectDBTest() error {
+	host := "localhost"
+	username := "fram"
+	password := "fram"
+	database := "employeeHierarchy"
+	port := 5432
+	sslMode := "disable"
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s",
+		host, username, password, database, port, sslMode)
+
+	p.db, p.err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if p.err != nil {
+		return errors.New(fmt.Sprintf("failed to connect database %v", p.err))
+	}
+
+	return nil
+}
+
 func (p *PostgreSQLConnector) Close() error {
 	if p.db != nil {
 		p.sqlDB, p.err = p.db.DB()
