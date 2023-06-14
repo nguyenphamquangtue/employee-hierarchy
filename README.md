@@ -1,7 +1,7 @@
 Usage:
 - `docker-compose up -d`
 
-- Khi bạn start app, tôi đã seed sẵn các data:
+- When you start the app, I have already seeded some data:
 
 | ID | Name    | Supervisor ID |
 |----|---------|---------------|
