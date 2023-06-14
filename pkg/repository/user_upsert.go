@@ -1,21 +1,16 @@
 package repository
 
 import (
-	"employee-hierarchy-api/external/dto"
-	"employee-hierarchy-api/internal/pg"
-
-	"gorm.io/gorm"
+	"context"
+	"employee-hierarchy-api/internal/dto"
 )
 
-func (userImpl) Insert(user dto.User, db *gorm.DB) (int, error) {
-	if db == nil {
-		db = pg.GetDB()
-	}
+func (r *UserImpl) Insert(ctx context.Context, user dto.User) (int, error) {
+	ctx, cancel := r.withCancellation(ctx)
+	defer cancel()
 
-	result := db.Create(&user)
-	if result.Error != nil {
-		return 0, result.Error
+	if err := r.dbConnector.GetDB().WithContext(ctx).Create(&user).Error; err != nil {
+		return 0, err
 	}
-
 	return user.ID, nil
 }

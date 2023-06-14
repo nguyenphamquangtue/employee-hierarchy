@@ -2,25 +2,20 @@ package service
 
 import (
 	"context"
-	"employee-hierarchy-api/external/dto"
-	"employee-hierarchy-api/external/middleware"
-	"employee-hierarchy-api/external/utils/hash"
 	"employee-hierarchy-api/internal/config/errorcode"
+	"employee-hierarchy-api/internal/dto"
+	middleware2 "employee-hierarchy-api/internal/middleware"
+	"employee-hierarchy-api/internal/utils/hash"
 	requestmodel "employee-hierarchy-api/pkg/model/request"
-	"employee-hierarchy-api/pkg/repository"
 	"errors"
 	"fmt"
 )
 
-func (s userImpl) Login(ctx context.Context, request requestmodel.UserLogin) (string, error) {
-	var (
-		repo = repository.User()
-	)
-
+func (s *UserImpl) Login(ctx context.Context, request requestmodel.UserLogin) (string, error) {
 	// find user
-	loginData, err := repo.Find(dto.User{
+	loginData, err := s.userRepository.Find(ctx, dto.User{
 		Username: request.Username,
-	}, nil)
+	})
 	if err != nil {
 		return "", errors.New(errorcode.UserDoesNotExist)
 	}
@@ -31,7 +26,7 @@ func (s userImpl) Login(ctx context.Context, request requestmodel.UserLogin) (st
 		return "", errors.New("invalid username or password")
 	}
 
-	accessToken, err := middleware.GenerateJWT(loginData)
+	accessToken, err := middleware2.GenerateJWT(loginData)
 	if err != nil {
 		return "", errors.New(errorcode.FailedToGenerateAccessToken)
 	}
@@ -39,8 +34,8 @@ func (s userImpl) Login(ctx context.Context, request requestmodel.UserLogin) (st
 	return accessToken, nil
 }
 
-func (s userImpl) Logout(ctx context.Context, accessToken string) error {
-	if err := middleware.Revoke(accessToken); err != nil {
+func (s *UserImpl) Logout(ctx context.Context, accessToken string) error {
+	if err := middleware2.Revoke(accessToken); err != nil {
 		return err
 	}
 	return nil

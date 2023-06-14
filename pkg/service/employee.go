@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"employee-hierarchy-api/external/dto"
+	"employee-hierarchy-api/internal/dto"
 	requestmodel "employee-hierarchy-api/pkg/model/request"
+	"employee-hierarchy-api/pkg/repository"
 	"gorm.io/gorm"
 )
 
@@ -13,8 +14,12 @@ type EmployeeInterface interface {
 	Update(ctx context.Context, id int, data requestmodel.EmployeeUpdate, db *gorm.DB) (int, error)
 }
 
-type employeeImpl struct{}
+type EmployeeImpl struct {
+	employeeRepository repository.EmployeeInterface
+}
 
-func Employee() EmployeeInterface {
-	return employeeImpl{}
+func Employee(employeeRepository repository.EmployeeInterface) *EmployeeImpl {
+	return &EmployeeImpl{
+		employeeRepository: employeeRepository,
+	}
 }

@@ -1,33 +1,26 @@
 package repository
 
 import (
-	"employee-hierarchy-api/external/dto"
-	"employee-hierarchy-api/internal/pg"
-	"gorm.io/gorm"
+	"context"
+	"employee-hierarchy-api/internal/dto"
 )
 
-func (employeeImpl) Insert(employee dto.Employee, db *gorm.DB) (int, error) {
-	if db == nil {
-		db = pg.GetDB()
-	}
+func (r *EmployeeImpl) Insert(ctx context.Context, employee dto.Employee) (int, error) {
+	ctx, cancel := r.withCancellation(ctx)
+	defer cancel()
 
-	result := db.Create(&employee)
-	if result.Error != nil {
-		return 0, result.Error
+	if err := r.dbConnector.GetDB().WithContext(ctx).Create(&employee).Error; err != nil {
+		return 0, err
 	}
-
 	return employee.ID, nil
 }
 
-func (r employeeImpl) Update(employee dto.Employee, db *gorm.DB) (int, error) {
-	if db == nil {
-		db = pg.GetDB()
-	}
+func (r *EmployeeImpl) Update(ctx context.Context, employee dto.Employee) (int, error) {
+	ctx, cancel := r.withCancellation(ctx)
+	defer cancel()
 
-	result := db.Model(&dto.Employee{}).Where("id = ?", employee.ID).Updates(employee)
-	if result.Error != nil {
-		return 0, result.Error
+	if err := r.dbConnector.GetDB().WithContext(ctx).Model(&dto.Employee{}).Where("id = ?", employee.ID).Updates(employee).Error; err != nil {
+		return 0, err
 	}
-
 	return employee.ID, nil
 }

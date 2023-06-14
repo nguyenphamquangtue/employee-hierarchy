@@ -8,6 +8,7 @@ const (
 	PasswordInvalid             = "password_invalid"
 	FailedToHashPassword        = "failed_to_hash_password"
 	FailedToGenerateAccessToken = "failed_to_generate_access_token"
+	UserInsertFailed            = "user_insert_failed"
 )
 
 const (
@@ -16,6 +17,7 @@ const (
 	passwordInvalidCode
 	failedToHashPassword
 	failedToGenerateAccessToken
+	userInsertFailedCode
 )
 
 var user = []response.Code{
@@ -43,5 +45,10 @@ var user = []response.Code{
 		Key:     FailedToGenerateAccessToken,
 		Code:    failedToGenerateAccessToken,
 		Message: "Failed to Hash Password",
+	},
+	{
+		Key:     UserInsertFailed,
+		Code:    userInsertFailedCode,
+		Message: "User Insert Failed",
 	},
 }

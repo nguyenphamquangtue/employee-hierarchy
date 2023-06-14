@@ -8,6 +8,7 @@ const (
 	EmployeeNameRequired                   = "employee_name_required"
 	SupervisorIDRequired                   = "supervisor_id_required"
 	EmployeeExisted                        = "employee_existed"
+	EmployeeInsertFailed                   = "employee_insert_failed"
 	SupervisorNotFound                     = "supervisor_not_found"
 	CycleDetectedInSupervisorHierarchy     = "cycle_detected_in_supervisor_hierarchy"
 	SubordinateCannotBeASupervisor         = "subordinate_cannot_be_a_supervisor"
@@ -17,8 +18,9 @@ const (
 const (
 	employeeNotFoundCode = iota + 700
 	employeeIDRequiredCode
-	employeeNameRequired
-	supervisorIDRequired
+	employeeNameRequiredCode
+	employeeInsertFailedCode
+	supervisorIDRequiredCode
 	employeeExistedCode
 	supervisorNotFoundCode
 	CycleDetectedInSupervisorHierarchyCode
@@ -39,12 +41,12 @@ var employee = []response.Code{
 	},
 	{
 		Key:     EmployeeNameRequired,
-		Code:    employeeNameRequired,
+		Code:    employeeNameRequiredCode,
 		Message: "Employee Name Required",
 	},
 	{
 		Key:     SupervisorIDRequired,
-		Code:    supervisorIDRequired,
+		Code:    supervisorIDRequiredCode,
 		Message: "Supervisor ID Required",
 	},
 	{
@@ -71,5 +73,10 @@ var employee = []response.Code{
 		Key:     SupervisorCannotBeTheSameAsTheEmployee,
 		Code:    SupervisorCannotBeTheSameAsTheEmployeeCode,
 		Message: "Supervisor Cannot be the same as the employee",
+	},
+	{
+		Key:     EmployeeInsertFailed,
+		Code:    employeeInsertFailedCode,
+		Message: "Employee Insert Failed",
 	},
 }

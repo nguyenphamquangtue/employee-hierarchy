@@ -1,40 +1,39 @@
 package repository
 
 import (
-	"employee-hierarchy-api/external/dto"
-	"employee-hierarchy-api/internal/pg"
-	"gorm.io/gorm"
+	"context"
+	"employee-hierarchy-api/internal/dto"
 )
 
-func (r employeeImpl) Find(name string, db *gorm.DB) (*dto.Employee, error) {
-	if db == nil {
-		db = pg.GetDB()
-	}
+func (r *EmployeeImpl) Find(ctx context.Context, name string) (*dto.Employee, error) {
+	ctx, cancel := r.withCancellation(ctx)
+	defer cancel()
+
 	var employee dto.Employee
-	if err := db.Preload("Subordinates").Where("name = ?", name).First(&employee).Error; err != nil {
+	if err := r.dbConnector.GetDB().WithContext(ctx).Preload("Subordinates").Where("name = ?", name).First(&employee).Error; err != nil {
 		return nil, err
 	}
 
 	return &employee, nil
 }
 
-func (r employeeImpl) FindByID(id int, db *gorm.DB) (*dto.Employee, error) {
-	if db == nil {
-		db = pg.GetDB()
-	}
+func (r *EmployeeImpl) FindByID(ctx context.Context, id int) (*dto.Employee, error) {
+	ctx, cancel := r.withCancellation(ctx)
+	defer cancel()
+
 	var employee dto.Employee
-	if err := db.Preload("Subordinates").Where("id = ?", id).First(&employee).Error; err != nil {
+	if err := r.dbConnector.GetDB().WithContext(ctx).Preload("Subordinates").Where("id = ?", id).First(&employee).Error; err != nil {
 		return nil, err
 	}
 	return &employee, nil
 }
 
-func (r employeeImpl) Exist(name string, db *gorm.DB) (bool, error) {
-	if db == nil {
-		db = pg.GetDB()
-	}
+func (r *EmployeeImpl) Exist(ctx context.Context, name string) (bool, error) {
+	ctx, cancel := r.withCancellation(ctx)
+	defer cancel()
+
 	var employee dto.Employee
-	result := db.Where("name = ?", name).First(&employee)
+	result := r.dbConnector.GetDB().WithContext(ctx).Where("name = ?", name).First(&employee)
 	if result.Error != nil {
 		return false, result.Error
 	}

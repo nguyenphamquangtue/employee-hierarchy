@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"employee-hierarchy-api/external/dto"
+	"employee-hierarchy-api/internal/dto"
 	"employee-hierarchy-api/internal/response"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"

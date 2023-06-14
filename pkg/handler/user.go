@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"employee-hierarchy-api/external/utils/echocontext"
 	"employee-hierarchy-api/internal/response"
+	echocontext2 "employee-hierarchy-api/internal/utils/echocontext"
 	requestmodel "employee-hierarchy-api/pkg/model/request"
 	responsemodel "employee-hierarchy-api/pkg/model/response"
 	"employee-hierarchy-api/pkg/service"
@@ -15,22 +15,25 @@ type UserInterface interface {
 	Register(c echo.Context) error
 }
 
-type userImpl struct{}
+type UserImpl struct {
+	userService service.UserInterface
+}
 
-func User() UserInterface {
-	return userImpl{}
+func User(userService service.UserInterface) *UserImpl {
+	return &UserImpl{
+		userService: userService,
+	}
 }
 
 // Login ...
-func (userImpl) Login(c echo.Context) error {
+func (h *UserImpl) Login(c echo.Context) error {
 	var (
-		ctx     = echocontext.GetContext(c)
-		payload = echocontext.GetPayload(c).(requestmodel.UserLogin)
-		s       = service.User()
+		ctx     = echocontext2.GetContext(c)
+		payload = echocontext2.GetPayload(c).(requestmodel.UserLogin)
 	)
 
 	// Login
-	accessToken, err := s.Login(ctx, payload)
+	accessToken, err := h.userService.Login(ctx, payload)
 	if err != nil {
 		return response.R400(c, echo.Map{}, err.Error())
 	}
@@ -40,15 +43,14 @@ func (userImpl) Login(c echo.Context) error {
 }
 
 // Logout ...
-func (userImpl) Logout(c echo.Context) error {
+func (h *UserImpl) Logout(c echo.Context) error {
 	var (
-		ctx         = echocontext.GetContext(c)
-		accessToken = echocontext.GetPayload(c).(string)
-		s           = service.User()
+		ctx         = echocontext2.GetContext(c)
+		accessToken = echocontext2.GetPayload(c).(string)
 	)
 
 	// Logout
-	err := s.Logout(ctx, accessToken)
+	err := h.userService.Logout(ctx, accessToken)
 	if err != nil {
 		return response.R400(c, echo.Map{}, err.Error())
 	}
@@ -57,15 +59,13 @@ func (userImpl) Logout(c echo.Context) error {
 }
 
 // Register ...
-func (userImpl) Register(c echo.Context) error {
+func (h *UserImpl) Register(c echo.Context) error {
 	var (
-		ctx     = echocontext.GetContext(c)
-		payload = echocontext.GetPayload(c).(requestmodel.UserRegister)
-		s       = service.User()
+		ctx     = echocontext2.GetContext(c)
+		payload = echocontext2.GetPayload(c).(requestmodel.UserRegister)
 	)
-
 	// register
-	id, err := s.Register(ctx, payload)
+	id, err := h.userService.Register(ctx, payload)
 	if err != nil {
 		return response.R400(c, echo.Map{}, err.Error())
 	}

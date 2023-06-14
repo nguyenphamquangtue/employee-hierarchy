@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	requestmodel "employee-hierarchy-api/pkg/model/request"
+	"employee-hierarchy-api/pkg/repository"
 )
 
 type UserInterface interface {
@@ -11,8 +12,12 @@ type UserInterface interface {
 	Register(ctx context.Context, request requestmodel.UserRegister) (int, error)
 }
 
-type userImpl struct{}
+type UserImpl struct {
+	userRepository repository.UserInterface
+}
 
-func User() UserInterface {
-	return userImpl{}
+func User(userRepository repository.UserInterface) *UserImpl {
+	return &UserImpl{
+		userRepository: userRepository,
+	}
 }

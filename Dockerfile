@@ -1,4 +1,5 @@
-FROM golang:latest
+# Stage 1: Build binary
+FROM golang:latest as builder
 
 WORKDIR /app
 
@@ -8,8 +9,19 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+# Stage 2: Create lightweight image
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+COPY --from=builder /app/main .
 
 CMD ["./main"]
 
 EXPOSE 3000
+
+

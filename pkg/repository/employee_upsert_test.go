@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"employee-hierarchy-api/external/dto"
+	"employee-hierarchy-api/internal/dto"
 	"employee-hierarchy-api/internal/pg"
 	"fmt"
 	"gorm.io/gorm"

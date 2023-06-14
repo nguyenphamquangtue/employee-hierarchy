@@ -1,20 +1,16 @@
 package repository
 
 import (
-	"employee-hierarchy-api/external/dto"
-	"employee-hierarchy-api/internal/pg"
-
-	"gorm.io/gorm"
+	"context"
+	"employee-hierarchy-api/internal/dto"
 )
 
-func (r userImpl) Find(user dto.User, db *gorm.DB) (*dto.User, error) {
-	if db == nil {
-		db = pg.GetDB()
-	}
+func (r *UserImpl) Find(ctx context.Context, user dto.User) (*dto.User, error) {
+	ctx, cancel := r.withCancellation(ctx)
+	defer cancel()
 
-	result := db.Where("username = ?", user.Username).First(&user)
-	if result.Error != nil {
-		return nil, result.Error
+	if err := r.dbConnector.GetDB().WithContext(ctx).Where("username = ?", user.Username).First(&user).Error; err != nil {
+		return nil, err
 	}
 
 	return &user, nil

@@ -1,18 +1,26 @@
 package repository
 
 import (
-	"employee-hierarchy-api/external/dto"
-
-	"gorm.io/gorm"
+	"context"
+	"employee-hierarchy-api/internal/dto"
+	"employee-hierarchy-api/internal/pg"
 )
 
 type UserInterface interface {
-	Find(user dto.User, db *gorm.DB) (*dto.User, error)
-	Insert(user dto.User, db *gorm.DB) (int, error)
+	Find(ctx context.Context, user dto.User) (*dto.User, error)
+	Insert(ctx context.Context, user dto.User) (int, error)
 }
 
-type userImpl struct{}
+type UserImpl struct {
+	dbConnector pg.DBConnector
+}
 
-func User() UserInterface {
-	return userImpl{}
+func User(dbConnector pg.DBConnector) *UserImpl {
+	return &UserImpl{
+		dbConnector: dbConnector,
+	}
+}
+
+func (r *UserImpl) withCancellation(ctx context.Context) (context.Context, context.CancelFunc) {
+	return context.WithCancel(ctx)
 }

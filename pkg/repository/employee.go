@@ -1,20 +1,29 @@
 package repository
 
 import (
-	"employee-hierarchy-api/external/dto"
-	"gorm.io/gorm"
+	"context"
+	"employee-hierarchy-api/internal/dto"
+	"employee-hierarchy-api/internal/pg"
 )
 
 type EmployeeInterface interface {
-	Exist(name string, db *gorm.DB) (bool, error)
-	Find(name string, db *gorm.DB) (*dto.Employee, error)
-	FindByID(id int, db *gorm.DB) (*dto.Employee, error)
-	Insert(employee dto.Employee, db *gorm.DB) (int, error)
-	Update(employee dto.Employee, db *gorm.DB) (int, error)
+	Exist(ctx context.Context, name string) (bool, error)
+	Find(ctx context.Context, name string) (*dto.Employee, error)
+	FindByID(ctx context.Context, id int) (*dto.Employee, error)
+	Insert(ctx context.Context, employee dto.Employee) (int, error)
+	Update(ctx context.Context, employee dto.Employee) (int, error)
 }
 
-type employeeImpl struct{}
+type EmployeeImpl struct {
+	dbConnector pg.DBConnector
+}
 
-func Employee() EmployeeInterface {
-	return employeeImpl{}
+func Employee(dbConnector pg.DBConnector) *EmployeeImpl {
+	return &EmployeeImpl{
+		dbConnector: dbConnector,
+	}
+}
+
+func (r *EmployeeImpl) withCancellation(ctx context.Context) (context.Context, context.CancelFunc) {
+	return context.WithCancel(ctx)
 }

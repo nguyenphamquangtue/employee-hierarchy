@@ -1,8 +1,8 @@
 package routevalidation
 
 import (
-	"employee-hierarchy-api/external/utils/echocontext"
 	"employee-hierarchy-api/internal/response"
+	"employee-hierarchy-api/internal/utils/echocontext"
 	requestmodel "employee-hierarchy-api/pkg/model/request"
 	"github.com/labstack/echo/v4"
 )

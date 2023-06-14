@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"employee-hierarchy-api/external/utils/echocontext"
 	"employee-hierarchy-api/internal/response"
+	echocontext2 "employee-hierarchy-api/internal/utils/echocontext"
 	requestmodel "employee-hierarchy-api/pkg/model/request"
 	responsemodel "employee-hierarchy-api/pkg/model/response"
 	"employee-hierarchy-api/pkg/service"
@@ -16,21 +16,24 @@ type EmployeeInterface interface {
 	Update(c echo.Context) error
 }
 
-type employeeImpl struct{}
+type EmployeeImpl struct {
+	employeeService service.EmployeeInterface
+}
 
-func Employee() EmployeeInterface {
-	return employeeImpl{}
+func Employee(employeeService service.EmployeeInterface) *EmployeeImpl {
+	return &EmployeeImpl{
+		employeeService: employeeService,
+	}
 }
 
 // Find ...
-func (employeeImpl) Find(c echo.Context) error {
+func (h *EmployeeImpl) Find(c echo.Context) error {
 	var (
-		ctx  = echocontext.GetContext(c)
-		s    = service.Employee()
+		ctx  = echocontext2.GetContext(c)
 		name = c.QueryParam("name")
 	)
 
-	employee, err := s.Find(ctx, name)
+	employee, err := h.employeeService.Find(ctx, name)
 	if err != nil {
 		return response.R400(c, echo.Map{}, err.Error())
 	}
@@ -38,14 +41,13 @@ func (employeeImpl) Find(c echo.Context) error {
 }
 
 // Create ...
-func (employeeImpl) Create(c echo.Context) error {
+func (h *EmployeeImpl) Create(c echo.Context) error {
 	var (
-		ctx     = echocontext.GetContext(c)
-		payload = echocontext.GetPayload(c).(requestmodel.EmployeeCreate)
-		s       = service.Employee()
+		ctx     = echocontext2.GetContext(c)
+		payload = echocontext2.GetPayload(c).(requestmodel.EmployeeCreate)
 	)
 
-	id, err := s.Create(ctx, payload)
+	id, err := h.employeeService.Create(ctx, payload)
 	if err != nil {
 		return response.R400(c, echo.Map{}, err.Error())
 	}
@@ -55,11 +57,10 @@ func (employeeImpl) Create(c echo.Context) error {
 }
 
 // Update ...
-func (employeeImpl) Update(c echo.Context) error {
+func (h *EmployeeImpl) Update(c echo.Context) error {
 	var (
-		ctx        = echocontext.GetContext(c)
-		payload    = echocontext.GetPayload(c).(requestmodel.EmployeeUpdate)
-		s          = service.Employee()
+		ctx        = echocontext2.GetContext(c)
+		payload    = echocontext2.GetPayload(c).(requestmodel.EmployeeUpdate)
 		employeeID = c.Param("id")
 	)
 
@@ -68,7 +69,7 @@ func (employeeImpl) Update(c echo.Context) error {
 		return response.R400(c, echo.Map{}, err.Error())
 	}
 
-	id, err := s.Update(ctx, eID, payload, nil)
+	id, err := h.employeeService.Update(ctx, eID, payload, nil)
 	if err != nil {
 		return response.R400(c, echo.Map{}, err.Error())
 	}
